@@ -30,14 +30,14 @@ def detect_red_flags(headers):
     return_path = headers["Return-Path"] or ""
 
     if return_path and return_path not in from_email:
-        flags.append("⚠️ 'From' and 'Return-Path' domains do not match")
+        flags.append(" 'From' and 'Return-Path' domains do not match")
 
     if re.search(r"(hotmail|yahoo|gmail)\.com", from_email, re.IGNORECASE):
         flags.append("⚠️ Email is from a public domain provider")
 
     auth_results = headers.get("Authentication-Results", "")
     if "fail" in (auth_results or "").lower():
-        flags.append("❌ Authentication (SPF/DKIM/DMARC) failed")
+        flags.append(" Authentication (SPF/DKIM/DMARC) failed")
 
     return flags
 
@@ -54,7 +54,7 @@ def scan_url_virustotal(url):
     )
 
     if response.status_code != 200:
-        print("❌ Failed to submit URL for scanning")
+        print(" Failed to submit URL for scanning")
         return None
 
     url_id = response.json()["data"]["id"]
@@ -66,7 +66,7 @@ def scan_url_virustotal(url):
     ).json()
 
     stats = result["data"]["attributes"]["stats"]
-    print("\n📊 VirusTotal Analysis Summary:")
+    print("\n VirusTotal Analysis Summary:")
     print(f"Harmless: {stats['harmless']}")
     print(f"Suspicious: {stats['suspicious']}")
     print(f"Malicious: {stats['malicious']}")
@@ -85,7 +85,7 @@ def save_report(headers, red_flags, url=None, vt_stats=None, filename="email_rep
             for flag in red_flags:
                 f.write(f"- {flag}\n")
         else:
-            f.write("- ✅ No red flags detected\n")
+            f.write("-  No red flags detected\n")
 
         if url and vt_stats:
             f.write("\n## VirusTotal URL Scan\n")
@@ -94,22 +94,22 @@ def save_report(headers, red_flags, url=None, vt_stats=None, filename="email_rep
             f.write(f"- Suspicious: {vt_stats['suspicious']}\n")
             f.write(f"- Malicious: {vt_stats['malicious']}\n")
 
-    print(f"\n📝 Report saved as: {filename}")
+    print(f"\n Report saved as: {filename}")
 
 def analyze_email(file_path):
     headers = parse_email_header(file_path)
     red_flags = detect_red_flags(headers)
 
-    print("\n📧 Email Header Information:")
+    print("\n Email Header Information:")
     for key, value in headers.items():
         print(f"{key}: {value}")
 
-    print("\n🚨 Detected Red Flags:")
+    print("\n Detected Red Flags:")
     if red_flags:
         for flag in red_flags:
             print(flag)
     else:
-        print("✅ No immediate red flags detected.")
+        print(" No immediate red flags detected.")
 
     url_input = input("\nEnter a URL from the email to check (or press Enter to skip): ")
     vt_stats = None
@@ -119,6 +119,6 @@ def analyze_email(file_path):
     save_report(headers, red_flags, url_input if url_input else None, vt_stats)
 
 if __name__ == "__main__":
-    print("📥 Email Phishing Detection & Analysis Tool")
+    print(" Email Phishing Detection & Analysis Tool")
     path = input("Enter the path to the .eml email file: ")
     analyze_email(path)
