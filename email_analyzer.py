@@ -7,7 +7,7 @@ import re
 import requests
 import time
 
-API_KEY = "3e91ad248c864616cae1edf211e178b9a9cd56a0d98220d65e48bbe53a6a7e88"  # Replace with your actual API key
+API_KEY = ""  # Replace with your actual API key
 
 def get_email_body(msg):
     text_body = ""
