@@ -9,3 +9,10 @@
 - **Authentication-Results**: None
 
 ## Red Flags
+- Email is from a public domain provider
+
+## VirusTotal URL Scan
+- URL: https://phishingsite.com/verify-account
+- Harmless: 66
+- Suspicious: 0
+- Malicious: 0
