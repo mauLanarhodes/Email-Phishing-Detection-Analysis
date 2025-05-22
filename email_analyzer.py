@@ -140,21 +140,32 @@ def analyze_email(file_path):
     print("\nDetected Red Flags:")
     if red_flags:
         for flag in red_flags:
-            print(flag)
+            print(f"- {flag}")
     else:
         print("No immediate red flags detected.")
 
+    # Extract URLs
     body = headers.get("Body", "")
     found_urls = re.findall(r'https?://[^\s"<>\]]+', body)
-    vt_stats = None
 
-    if found_urls:
-        print(f"\nFound URL: {found_urls[0]}")
-        vt_stats = scan_url_virustotal(found_urls[0])
-    else:
-        print("\nNo URLs found in email body.")
+    print(f"\nTotal Links Found: {len(found_urls)}")
+    if not found_urls:
+        print("No URLs found in the email body.")
+        save_report(headers, red_flags)
+        return
 
-    save_report(headers, red_flags, found_urls[0] if found_urls else None, vt_stats)
+    print("\nLinks Found:")
+    for idx, url in enumerate(found_urls, 1):
+        print(f"{idx}. {url}")
+        vt_stats = scan_url_virustotal(url)
+        save_report(
+            headers,
+            red_flags,
+            url=url,
+            vt_stats=vt_stats,
+            filename=f"report_{idx}.md"
+        )
+
 
 if __name__ == "__main__":
     print("Email Phishing Detection & Analysis Tool")
